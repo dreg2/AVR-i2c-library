@@ -80,7 +80,7 @@ test_slave_lib: $(LIB)
 	$(COMPILE) -o $(TARGET).elf $(TEST_OBJ) -Wl,-u,tag_TWI_vect $(L_FLAGS) -l$(TARGET)
 	$(AVROBJCOPY)
 
-#d all other .c files need a matching .h
+# all other .c files need a matching .h
 %.o: %.c $(INCLUDES)
 	$(COMPILE) -c $< -o $@
 
@@ -117,7 +117,7 @@ monitor2:
 
 
 # file targets
-$(TARGET).elf: $(OBJS)
+$(ELF): $(OBJS)
 	$(COMPILE) -o $(TARGET).elf $(OBJS) $(L_FLAGS)
 
 $(HEX): $(ELF)
