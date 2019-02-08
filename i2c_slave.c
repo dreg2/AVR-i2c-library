@@ -1,6 +1,5 @@
 #include <avr/io.h>
 #include <util/twi.h>
-//#include <stdio.h>
 
 #include "i2c.h"
 

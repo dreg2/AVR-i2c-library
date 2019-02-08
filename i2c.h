@@ -2,6 +2,8 @@
 #define I2C_H_
 
 #include <avr/interrupt.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #include "common.h"
 
@@ -32,9 +34,9 @@ uint8_t i2c_recv(uint8_t ack_flag);
 // master functions
 uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag);
 void    i2c_master_stop(void);
-uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, uint16_t out_length, uint8_t start_flag);
-uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, uint16_t in_length, uint8_t start_flag);
-uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_buffer, uint16_t out_length, uint8_t *in_buffer, uint16_t in_length);
+uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t start_flag);
+uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, size_t in_length, uint8_t start_flag);
+uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t *in_buffer, size_t in_length);
 
 // start flag values
 #define I2C_SEQ_NONE       0

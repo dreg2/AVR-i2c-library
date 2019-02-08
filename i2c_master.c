@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <util/twi.h>
 #include <util/delay.h>
-#include <stdio.h>
 
 #include "i2c.h"
 
@@ -110,7 +109,7 @@ void i2c_master_stop(void)
 //----------------------------------------------------------------------------------------------------
 // master write to i2c slave
 //----------------------------------------------------------------------------------------------------
-uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, uint16_t out_length, uint8_t start_flag)
+uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t start_flag)
 	{
 	// start i2c sequence
 	if (start_flag == I2C_SEQ_START_STOP || start_flag == I2C_SEQ_START)
@@ -118,7 +117,7 @@ uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, uint16_t out_l
 			return 1;
 
 	// send out_buffer bytes
-	for (uint16_t i = 0; i < out_length; i++)
+	for (size_t i = 0; i < out_length; i++)
 		{
 		i2c_send(out_buffer[i]);
 		if (TW_STATUS != TW_MT_DATA_ACK)
@@ -135,7 +134,7 @@ uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, uint16_t out_l
 //----------------------------------------------------------------------------------------------------
 // master read from i2c slave
 //----------------------------------------------------------------------------------------------------
-uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, uint16_t in_length, uint8_t start_flag)
+uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, size_t in_length, uint8_t start_flag)
 	{
 	// start i2c sequence
 	if (start_flag == I2C_SEQ_START_STOP || start_flag == I2C_SEQ_START)
@@ -145,7 +144,7 @@ uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, uint16_t in_length, ui
 	// recieve in_buffer bytes
 	if (in_length > 1)
 		{
-		for (uint16_t i = 0; i < (in_length - 1); i++)
+		for (size_t i = 0; i < (in_length - 1); i++)
 			in_buffer[i] = i2c_recv(I2C_ACK);
 		}
 
@@ -163,7 +162,7 @@ uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, uint16_t in_length, ui
 //----------------------------------------------------------------------------------------------------
 // master transfer with slave
 //----------------------------------------------------------------------------------------------------
-uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_data, uint16_t out_length, uint8_t *in_data, uint16_t in_length)
+uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_data, size_t out_length, uint8_t *in_data, size_t in_length)
 	{
 	// send out buffer
 	if (out_data != NULL && out_length > 0)
@@ -173,7 +172,7 @@ uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_data, uint16_t out_leng
 			return 1;
 
 		// send out buffer bytes
-		for (uint16_t i = 0; i < out_length; i++)
+		for (size_t i = 0; i < out_length; i++)
 			{
 			i2c_send(out_data[i]);
 			if (TW_STATUS != TW_MT_DATA_ACK)
@@ -195,7 +194,7 @@ uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_data, uint16_t out_leng
 		// recieve buffer bytes
 		if (in_length > 1)
 			{
-			for (uint16_t i = 0; i < (in_length - 1); i++)
+			for (size_t i = 0; i < (in_length - 1); i++)
 				in_data[i] = i2c_recv(I2C_ACK);
 			}
 
