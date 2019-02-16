@@ -12,12 +12,6 @@
 #define TWI_FREQ_50K   50000UL   // twi scl frequency 50 khz
 #define TWI_PRESCALER 1          // twi bit rate prescaler
 
-#define I2C_START_DELAY_US 0        // delay after start in usecs
-#define I2C_STOP_DELAY_US  0        // delay after stop in usecs
-#define I2C_SEND_DELAY_US  0        // delay after byte send in usecs
-#define I2C_RECV_DELAY_US  0        // delay after byte receive in usecs
-#define I2C_XFER_DELAY_US  0        // delay between send and receive during xfer in usecs
-
 // base functions
 void    i2c_conf_bus(unsigned long twi_freq, uint8_t pur_flag);
 uint8_t i2c_send(uint8_t data);

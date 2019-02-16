@@ -34,10 +34,6 @@ uint8_t i2c_send(uint8_t data)
 	TWCR = _BV(TWINT) | _BV(TWEN);
 	loop_until_bit_is_set(TWCR, TWINT);
 
-	#if I2C_SEND_DELAY_US > 0
-	_delay_us(I2C_SEND_DELAY_US);
-	#endif
-
 	return TW_STATUS;
 	}
 
@@ -54,10 +50,6 @@ uint8_t i2c_recv(uint8_t ack_flag)
 		// receive and send NACK
 		TWCR = _BV(TWINT) | _BV(TWEN);
 	loop_until_bit_is_set(TWCR, TWINT);
-
-	#if I2C_RECV_DELAY_US > 0
-	_delay_us(I2C_RECV_DELAY_US);
-	#endif
 
 	// return received byte
 	return TWDR;
@@ -86,10 +78,6 @@ uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag)
 		return 1;
 		}
 
-	#if I2C_START_DELAY_US > 0
-	_delay_us(I2C_START_DELAY_US);
-	#endif
-
 	return 0;
 	}
 
@@ -100,10 +88,6 @@ void i2c_master_stop(void)
 	{
 	// send stop signal
 	TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
-
-	#if I2C_STOP_DELAY_US > 0
-	_delay_us(I2C_STOP_DELAY_US);
-	#endif
 	}
 
 //----------------------------------------------------------------------------------------------------
@@ -179,10 +163,6 @@ uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_data, size_t out_length
 				return 1;
 			}
 		}
-
-	#if I2C_XFER_DELAY_US > 0
-	_delay_us(I2C_XFER_DELAY_US);
-	#endif
 
 	// recv in buffer
 	if (in_data != NULL && in_length > 0)
