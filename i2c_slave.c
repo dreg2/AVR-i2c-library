@@ -22,7 +22,7 @@ void i2c_slave_start(uint8_t addr, uint8_t *index, uint8_t *array, uint8_t size)
 	TWAR = (uint8_t)(addr << 1);
 
 	// set slave in twcr with interrupt
-	TWCR = _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
+	TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
 	}
 
 //----------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ void i2c_slave_start(uint8_t addr, uint8_t *index, uint8_t *array, uint8_t size)
 void i2c_slave_stop(void)
 	{
 	// clear acknowledge and enable bits
-	TWCR &= (uint8_t)~(_BV(TWEA) | _BV(TWEN));
+	TWCR &= (uint8_t)~((1 << TWEA) | (1 << TWEN));
 	}
 
 //----------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ ISR(TWI_vect)
 			recv_state = STATE_RECV_ADDR;
 			*reg_addr = 0;
 
-			TWCR |= _BV(TWEA); // set to receive next byte with ACK
+			TWCR |= (1 << TWEA); // set to receive next byte with ACK
 			}
 			break;
 
@@ -70,7 +70,7 @@ ISR(TWI_vect)
 				recv_state = STATE_RECV_DATA;
 				*reg_addr = TWDR;
 
-				TWCR |= _BV(TWEA); // set to receive next byte with ACK
+				TWCR |= (1 << TWEA); // set to receive next byte with ACK
 				}
 
 			// second and subsequent bytes received are data
@@ -82,11 +82,11 @@ ISR(TWI_vect)
 				// check for register limit
 				if (*reg_addr < (reg_array_size - 1))
 					{
-					TWCR |= _BV(TWEA); // set to receive next byte with ACK
+					TWCR |= (1 << TWEA); // set to receive next byte with ACK
 					}
 				else
 					{
-					TWCR &= (uint8_t)~_BV(TWEA); // set to receive next byte with NACK
+					TWCR &= (uint8_t)~(1 << TWEA); // set to receive next byte with NACK
 					}
 				}
 			}
@@ -100,7 +100,7 @@ ISR(TWI_vect)
 			reg_array[*reg_addr] = TWDR;
 			recv_state = STATE_RECV_ADDR;
 			*reg_addr = 0;
-			TWCR |= _BV(TWEA); // set to receive next byte with ACK
+			TWCR |= (1 << TWEA); // set to receive next byte with ACK
 			}
 			break;
 
@@ -118,11 +118,11 @@ ISR(TWI_vect)
 			// check for register limit
 			if (*reg_addr < reg_array_size)
 				{
-				TWCR |= _BV(TWEA); // set to receive next byte with ACK
+				TWCR |= (1 << TWEA); // set to receive next byte with ACK
 				}
 			else
 				{
-				TWCR &= (uint8_t)~_BV(TWEA); // set to receive next byte with NACK
+				TWCR &= (uint8_t)~(1 << TWEA); // set to receive next byte with NACK
 				}
 			}
 			break;
@@ -139,7 +139,7 @@ ISR(TWI_vect)
 			// fresh start
 			recv_state = STATE_RECV_ADDR;
 			*reg_addr = 0;
-			TWCR |= _BV(TWEA); // set to receive next byte with ACK
+			TWCR |= (1 << TWEA); // set to receive next byte with ACK
 			}
 			break;
 
@@ -149,7 +149,7 @@ ISR(TWI_vect)
 		case TW_SR_STOP:         // 0xA0: stop condition received while selected
 			{
 			recv_state = STATE_RECV_ADDR;
-			TWCR |= _BV(TWEA); // set to receive next byte with ACK
+			TWCR |= (1 << TWEA); // set to receive next byte with ACK
 			}
 			break;
 
@@ -161,12 +161,12 @@ ISR(TWI_vect)
 			// fresh start
 			recv_state = STATE_RECV_ADDR;
 			*reg_addr = 0;
-			TWCR |= _BV(TWEA) | _BV(TWSTO); // release SCL and SDA
+			TWCR |= (1 << TWEA) | (1 << TWSTO); // release SCL and SDA
 			}
 			break;
 		}
 
 	// clear interrupt, set twi enable, set interrupt enable
-	TWCR |= _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
+	TWCR |= (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
 	}
 

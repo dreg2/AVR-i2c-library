@@ -11,14 +11,14 @@
 void i2c_conf_bus(unsigned long twi_freq, uint8_t pur_flag)
 	{
 	// turn on internal pull-up resistors on i2c lines
-	DDRC  &= (uint8_t)~(_BV(PINC4) | _BV(PINC5));         // set data direction to input
+	DDRC  &= (uint8_t)~((1 << PINC4) | (1 << PINC5));         // set data direction to input
 	if (pur_flag == TWI_PUR_ON)
-		PORTC |= _BV(PINC4) | _BV(PINC5);             // output 1 on pins to turn on pull-up resistors
+		PORTC |= (1 << PINC4) | (1 << PINC5);             // output 1 on pins to turn on pull-up resistors
 	else
-		PORTC &= (uint8_t)~(_BV(PINC4) | _BV(PINC5)); // output 0 on pins to turn off pull-up resistors
+		PORTC &= (uint8_t)~((1 << PINC4) | (1 << PINC5)); // output 0 on pins to turn off pull-up resistors
 
 	// turn off prescaler
-	TWSR &= (uint8_t)~(_BV(TWPS1) | _BV(TWPS0));
+	TWSR &= (uint8_t)~((1 << TWPS1) | (1 << TWPS0));
 
 	// set twi bit rate register
 	TWBR = (uint8_t)(((F_CPU / twi_freq) - 16) / 2);
@@ -31,7 +31,7 @@ uint8_t i2c_send(uint8_t data)
 	{
 	// send byte
 	TWDR = data;
-	TWCR = _BV(TWINT) | _BV(TWEN);
+	TWCR = (1 << TWINT) | (1 << TWEN);
 	loop_until_bit_is_set(TWCR, TWINT);
 
 	return TW_STATUS;
@@ -45,10 +45,10 @@ uint8_t i2c_recv(uint8_t ack_flag)
 	// receive byte
 	if (ack_flag == I2C_ACK)
 		// receive and send ACK
-		TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWEA);
+		TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);
 	else
 		// receive and send NACK
-		TWCR = _BV(TWINT) | _BV(TWEN);
+		TWCR = (1 << TWINT) | (1 << TWEN);
 	loop_until_bit_is_set(TWCR, TWINT);
 
 	// return received byte
@@ -61,7 +61,7 @@ uint8_t i2c_recv(uint8_t ack_flag)
 uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag)
 	{
 	// send start signal
-	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN);
+	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);
 	loop_until_bit_is_set(TWCR, TWINT);
 
 	// check for successful start
@@ -69,7 +69,7 @@ uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag)
 		return 1;
 
 	// send slave address with r/w bit
-	i2c_send((uint8_t)((addr<<1) | (rw_flag&0x01)));
+	i2c_send((uint8_t)((addr << 1) | (rw_flag&0x01)));
 
 	// check for slave device acknowledgement
 	if ((TW_STATUS != TW_MT_SLA_ACK) && (TW_STATUS != TW_MR_SLA_ACK))
@@ -87,7 +87,7 @@ uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag)
 void i2c_master_stop(void)
 	{
 	// send stop signal
-	TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+	TWCR = (1 << TWINT) | (1 << TWSTO) | (1 << TWEN);
 	}
 
 //----------------------------------------------------------------------------------------------------

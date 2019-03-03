@@ -125,12 +125,12 @@ int main(void)
 					for (uint8_t j = 0; j < 16; j++)
 						{
 						uint8_t idx = (uint8_t)((i * 16) + j);
-						if ((idx) <= 0x07 || (idx) == 0x78 || (idx) == 0x7f)
-							printf("xx ");
+						if ((idx) <= 0x07 || (idx) >= 0x78)
+							printf("xx ");  // reserved addresses
 						else if (i2c_master_start(idx, 1))
-							printf("-- ");
+							printf("-- ");  // no response
 						else
-							printf("%02hx ", (idx));
+							printf("%02hx ", (idx)); // respons
 						}
 					printf("\n");
 					}
