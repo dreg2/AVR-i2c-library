@@ -19,7 +19,7 @@
 
 int main(void)
 	{
-	uart_init_9600();           // initialize uart
+	uart_init_baud();           // initialize uart
 
 	#define SLAVE_REG_SIZE 64
 	uint8_t slave_idx;
@@ -52,14 +52,15 @@ int main(void)
 	return 0;
 	}
 
-#endif // TEST_SLAVE
+//#endif // TEST_SLAVE
 
 
 
 //----------------------------------------------------------------------------------------------------
 // test master
 //----------------------------------------------------------------------------------------------------
-#ifdef TEST_MASTER
+#else // TEST_SLAVE
+//#ifdef TEST_MASTER
 
 #define TEST_ADDR 0x5A
 //#define TEST_ADDR 0x48
@@ -70,7 +71,7 @@ int main(void)
 	{
 	uint8_t buffer[64];
 
-	uart_init_115200(); // initialize uart
+	uart_init_baud(); // initialize uart
 
 	// initialize reg buffer
 	for (uint8_t i = 0; i < 10; i++)

@@ -12,11 +12,6 @@
 #define TWI_FREQ_50K   50000UL   // twi scl frequency 50 khz
 #define TWI_PRESCALER 1          // twi bit rate prescaler
 
-// base functions
-void    i2c_conf_bus(unsigned long twi_freq, uint8_t pur_flag);
-uint8_t i2c_send(uint8_t data);
-uint8_t i2c_recv(uint8_t ack_flag);
-
 // pur flag values
 #define TWI_PUR_OFF   0          // twi pull-up resistors off
 #define TWI_PUR_ON    1          // twi pull-up resistors on
@@ -25,20 +20,25 @@ uint8_t i2c_recv(uint8_t ack_flag);
 #define I2C_NACK 0
 #define I2C_ACK  1
 
-// master functions
-uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag);
-void    i2c_master_stop(void);
-uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t start_flag);
-uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, size_t in_length, uint8_t start_flag);
-uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t *in_buffer, size_t in_length);
-
 // start flag values
 #define I2C_SEQ_NONE       0
 #define I2C_SEQ_START      1
 #define I2C_SEQ_STOP       2
 #define I2C_SEQ_START_STOP 3
 
-// slave functions
+// functions
+
+// i2c_master.c
+void    i2c_conf_bus(unsigned long twi_freq, uint8_t pur_flag);
+uint8_t i2c_send(uint8_t data);
+uint8_t i2c_recv(uint8_t ack_flag);
+uint8_t i2c_master_start(uint8_t addr, uint8_t rw_flag);
+void    i2c_master_stop(void);
+uint8_t i2c_master_write(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t start_flag);
+uint8_t i2c_master_read(uint8_t addr, uint8_t *in_buffer, size_t in_length, uint8_t start_flag);
+uint8_t i2c_master_xfer(uint8_t addr, const uint8_t *out_buffer, size_t out_length, uint8_t *in_buffer, size_t in_length);
+
+// i2c_slave.c
 void    i2c_slave_start(uint8_t address, uint8_t *index, uint8_t *array, uint8_t size);
 void    i2c_slave_stop(void);
 ISR(TWI_vect);
